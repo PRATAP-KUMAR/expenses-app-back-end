@@ -1,4 +1,4 @@
-# Expenses App - Fullstack App - Frontend
+# Expenses App - Fullstack App - Backend
 
 Link to [Frontend Repo](https://github.com/PRATAP-KUMAR/expenses-app-front-end)
 
