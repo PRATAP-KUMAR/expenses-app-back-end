@@ -20,7 +20,7 @@ npm install
     ```bash
     psql -U admin -W -d workoutsdb -f expensesdb_tables.sql
     ```
-4. you must create a `.env` file with a PORT number of your choice and with 32 characters long `SECRET` key of your own for example
+4. you must create a `.env` file with a `PORT` number of your choice and with 32 characters long `SECRET` key of your own for example
 
     ```bash
     PORT=3002
