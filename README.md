@@ -15,10 +15,10 @@ npm install
 2. you must create a new database with your choice of name for the database.
 3. you must import the `expensesdb_tables.sql` file into above created database using the below command line replacing the correct values for the -U and -d options (user name and database name)
 
-    Below is an example command, you must replace `admin` with your username and `workoutsdb` with your database name.
+    Below is an example command, you must replace `admin` with your username and `expensesdb` with your database name.
 
     ```bash
-    psql -U admin -W -d workoutsdb -f expensesdb_tables.sql
+    psql -U admin -W -d expensesdb -f expensesdb_tables.sql
     ```
 4. you must create a `.env` file with a `PORT` number of your choice and with 32 characters long `SECRET` key of your own for example
 
