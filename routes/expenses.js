@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteExpense, getExpenses, postExpenses, getExpense, updateExpense } from '../controllers/expenses.js';
+import { deleteExpense, getExpenses, postExpense, getExpense, updateExpense } from '../controllers/expenses.js';
 import requireAuth from '../middleware/requireAuth.js';
 
 const expenses = express.Router();
@@ -17,7 +17,7 @@ expenses.get('/:id', getExpense);
 expenses.patch('/:id', updateExpense);
 
 // Post Expense
-expenses.post('/expenses', postExpenses);
+expenses.post('/', postExpense);
 
 // Delete Expense
 expenses.delete('/:id', deleteExpense);

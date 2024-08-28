@@ -48,7 +48,7 @@ const updateExpense = async (req, res) => {
     res.status(200).json({sum});
 }
 
-const postExpenses = async (req, res) => {
+const postExpense = async (req, res) => {
     // get request
     const { user_id } = req;
     const { amount, description } = req.body;
@@ -91,4 +91,4 @@ const deleteExpense = async (req, res) => {
     }
 }
 
-export { getExpenses, getExpense, postExpenses, deleteExpense, updateExpense };
+export { getExpenses, getExpense, postExpense, deleteExpense, updateExpense };

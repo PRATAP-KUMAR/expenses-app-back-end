@@ -4,6 +4,7 @@ import expenses from './routes/expenses.js';
 import user from './routes/user.js';
 import dotenv from "dotenv";
 import cors from "cors";
+import contacts from './routes/contacts.js';
 
 // Express App
 const app = express();
@@ -19,7 +20,10 @@ app.use(cors({
 app.use('/api/user', user);
 
 // expenses
-app.use('/api', expenses);
+app.use('/api/expenses', expenses);
+
+// contacts
+app.use('/api/contacts', contacts);
 
 // check if pool credentials are correct and then only listen for requests
 let connected, database;
