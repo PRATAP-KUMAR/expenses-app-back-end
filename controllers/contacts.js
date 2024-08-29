@@ -73,7 +73,6 @@ const deleteContact = async (req, res) => {
         query = await pool.query(text, values);
         let deletedRow = query.rows[0];
         const { name, phone, created_at, updated_at } = deletedRow;
-        console.log(deletedRow);
 
         try {
             text = 'insert into deleted_contacts values ($1, $2, $3, $4, $5, $6, default)';
