@@ -15,7 +15,7 @@ const getContacts = async (req, res) => {
 const getContact = async (req, res) => {
     // get request
     const { user_id } = req;
-    const {id} = req.params;
+    const { id } = req.params;
 
     let text = 'select * from contacts where user_id = $1 and id = $2';
     let values = [user_id, id];
@@ -28,30 +28,36 @@ const getContact = async (req, res) => {
 const updateContact = async (req, res) => {
     // get request
     const { user_id } = req;
-    const {id} = req.params;
-    const {name, phone} = req.body;
+    const { id } = req.params;
+    const { name, phone } = req.body;
 
-    let text = 'update contacts set name = $3, phone = $4 where user_id = $1 and id = $2';
-    let values = [user_id, id, name, phone ];
+    let text = 'update contacts set name = $3, phone = $4, updated_at = current_timestamp where user_id = $1 and id = $2';
+    let values = [user_id, id, name, phone];
     let query = await pool.query(text, values);
+    console.log(query.rowCount);
 
     // give response
-    res.status(200).json({message: 'contact updated successfully'});
+    res.status(200).json({ message: 'contact updated successfully' });
 }
 
 const postContact = async (req, res) => {
     // get request
-    const { user_id } = req;
-    const { name, phone } = req.body;
+    try {
 
-    let text = 'insert into contacts values (default, $1, $2, $3) returning id';
-    let values = [name, phone, user_id];
-    let query = await pool.query(text, values);
-    let id = query.rows[0].id
+        const { user_id } = req;
+        const { name, phone } = req.body;
 
-    const data = { id, name, phone, user_id }
-    // give response
-    res.status(200).json(data);
+        let text = 'insert into contacts values (default, $1, $2, $3) returning id';
+        let values = [name, phone, user_id];
+        let query = await pool.query(text, values);
+        let id = query.rows[0].id
+
+        const data = { id, name, phone, user_id }
+        // give response
+        res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 // delete expense
@@ -60,12 +66,26 @@ const deleteContact = async (req, res) => {
         const { user_id } = req;
         const { id } = req.params
 
-        const text = 'delete from contacts where user_id = $1 and id = $2';
-        const values = [user_id, id];
-        const query = await pool.query(text, values);
+        let text, values, query;
 
-        return res.status(200).json({message: 'contact deleted successfully'});
+        text = 'delete from contacts where user_id = $1 and id = $2 returning *';
+        values = [user_id, id];
+        query = await pool.query(text, values);
+        let deletedRow = query.rows[0];
+        const { name, phone, created_at, updated_at } = deletedRow;
+        console.log(deletedRow);
+
+        try {
+            text = 'insert into deleted_contacts values ($1, $2, $3, $4, $5, $6, default)';
+            values = [id, name, phone, user_id, created_at, updated_at];
+            query = await pool.query(text, values);
+        } catch (e) {
+            console.log(e);
+        }
+
+        res.status(200).json({ message: 'contact deleted successfully' });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: error.message });
     }
 }

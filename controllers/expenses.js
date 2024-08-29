@@ -12,6 +12,7 @@ const getExpenses = async (req, res) => {
     let querySum = await pool.query(text, values);
     const sum = querySum.rows[0].sum;
 
+
     // give response
     res.status(200).json({ data: query.rows, sum });
 }
@@ -19,7 +20,7 @@ const getExpenses = async (req, res) => {
 const getExpense = async (req, res) => {
     // get request
     const { user_id } = req;
-    const {id} = req.params;
+    const { id } = req.params;
 
     let text = 'select * from expenses where user_id = $1 and id = $2';
     let values = [user_id, id];
@@ -32,11 +33,11 @@ const getExpense = async (req, res) => {
 const updateExpense = async (req, res) => {
     // get request
     const { user_id } = req;
-    const {id} = req.params;
-    const {amount, description} = req.body;
+    const { id } = req.params;
+    const { amount, description } = req.body;
 
-    let text = 'update expenses set amount = $3, description = $4 where user_id = $1 and id = $2';
-    let values = [user_id, id, amount, description ];
+    let text = 'update expenses set description = $3, amount = $4, updated_at = current_timestamp where user_id = $1 and id = $2';
+    let values = [user_id, id, description, amount];
     let query = await pool.query(text, values);
 
     text = 'select sum(amount) from expenses where user_id = $1';
@@ -45,7 +46,7 @@ const updateExpense = async (req, res) => {
     let sum = query.rows[0].sum;
 
     // give response
-    res.status(200).json({sum});
+    res.status(200).json({ sum });
 }
 
 const postExpense = async (req, res) => {
@@ -54,7 +55,7 @@ const postExpense = async (req, res) => {
     const { amount, description } = req.body;
 
     let text = 'insert into expenses values (default, $1, $2, $3) returning id';
-    let values = [amount, user_id, description];
+    let values = [description, amount, user_id];
     let query = await pool.query(text, values);
     let id = query.rows[0].id
 
@@ -74,15 +75,30 @@ const deleteExpense = async (req, res) => {
         const { user_id } = req;
         const { id } = req.params
 
-        const text = 'delete from expenses where user_id = $1 and id = $2';
-        const values = [user_id, id];
-        const query = await pool.query(text, values);
+        let text, values, query;
 
+        // delete
+        text = 'delete from expenses where user_id = $1 and id = $2 returning *';
+        values = [user_id, id];
+        query = await pool.query(text, values);
+        let deletedRow = query.rows[0]
+        let { description, amount, created_at, updated_at } = deletedRow;
+
+        // backup
+        try {
+            text = 'insert into deleted_expenses values ($1, $2, $3, $4, $5, $6, default)';
+            values = [id, description, amount, user_id, created_at, updated_at]
+            query = await pool.query(text, values);
+        } catch (e) {
+            console.log(e);
+        }
+
+        // update sum
         let sum;
         if (query.rowCount === 1) {
-            let text = 'select sum(amount) from expenses where user_id = $1';
-            let values = [user_id];
-            let query = await pool.query(text, values);
+            text = 'select sum(amount) from expenses where user_id = $1';
+            values = [user_id];
+            query = await pool.query(text, values);
             sum = query.rows[0].sum;
         }
         return res.status(200).json({ sum });

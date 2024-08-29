@@ -24,7 +24,7 @@ const signup = async (req, res) => {
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(password, salt);
 
-            text = 'insert into users values(default, $1, $2) returning user_id';
+            text = 'insert into users values(default, $1, $2, default) returning user_id';
             values = [email, hash];
             query = await pool.query(text, values);
 

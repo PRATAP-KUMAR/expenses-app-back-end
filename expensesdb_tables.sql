@@ -1,4 +1,4 @@
---
+﻿--
 -- PostgreSQL database dump
 --
 
@@ -28,7 +28,9 @@ CREATE TABLE public.contacts (
     id integer NOT NULL,
     name character varying NOT NULL,
     phone character varying(20) NOT NULL,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    created_at timestamp(0) DEFAULT now() NOT NULL,
+    updated_at timestamp(0)
 );
 
 
@@ -53,14 +55,46 @@ ALTER SEQUENCE public.contacts_id_seq OWNED BY public.contacts.id;
 
 
 --
+-- Name: deleted_contacts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_contacts (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    phone character varying NOT NULL,
+    user_id integer NOT NULL,
+    created_at timestamp(0) NOT NULL,
+    updated_at timestamp(0),
+    deleted_at timestamp(0) DEFAULT CURRENT_TIMESTAMP(0) NOT NULL
+);
+
+
+--
+-- Name: deleted_expenses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_expenses (
+    id integer NOT NULL,
+    description character varying NOT NULL,
+    amount integer NOT NULL,
+    user_id integer NOT NULL,
+    created_at timestamp(0) NOT NULL,
+    updated_at timestamp(0),
+    deleted_at timestamp(0) DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+--
 -- Name: expenses; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.expenses (
     id integer NOT NULL,
-    amount bigint NOT NULL,
+    description character varying NOT NULL,
+    amount integer NOT NULL,
     user_id integer NOT NULL,
-    description character varying NOT NULL
+    created_at timestamp(0) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp(0)
 );
 
 
@@ -91,7 +125,8 @@ ALTER SEQUENCE public.expenses_id_seq OWNED BY public.expenses.id;
 CREATE TABLE public.users (
     user_id integer NOT NULL,
     email character varying NOT NULL,
-    password character varying NOT NULL
+    password character varying NOT NULL,
+    created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -169,19 +204,19 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: expenses expenses_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.expenses
-    ADD CONSTRAINT expenses_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id);
-
-
---
 -- Name: contacts fk_contacts_users; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.contacts
     ADD CONSTRAINT fk_contacts_users FOREIGN KEY (user_id) REFERENCES public.users(user_id);
+
+
+--
+-- Name: expenses fk_expenses_users; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.expenses
+    ADD CONSTRAINT fk_expenses_users FOREIGN KEY (user_id) REFERENCES public.users(user_id);
 
 
 --
