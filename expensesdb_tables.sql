@@ -1,4 +1,4 @@
-﻿--
+--
 -- PostgreSQL database dump
 --
 
@@ -29,8 +29,8 @@ CREATE TABLE public.contacts (
     name character varying NOT NULL,
     phone character varying(20) NOT NULL,
     user_id integer NOT NULL,
-    created_at timestamp(0) DEFAULT now() NOT NULL,
-    updated_at timestamp(0)
+    created_at timestamp(0) without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp(0) without time zone
 );
 
 
@@ -63,9 +63,9 @@ CREATE TABLE public.deleted_contacts (
     name character varying NOT NULL,
     phone character varying NOT NULL,
     user_id integer NOT NULL,
-    created_at timestamp(0) NOT NULL,
-    updated_at timestamp(0),
-    deleted_at timestamp(0) DEFAULT CURRENT_TIMESTAMP(0) NOT NULL
+    created_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone,
+    deleted_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP(0) NOT NULL
 );
 
 
@@ -78,9 +78,9 @@ CREATE TABLE public.deleted_expenses (
     description character varying NOT NULL,
     amount integer NOT NULL,
     user_id integer NOT NULL,
-    created_at timestamp(0) NOT NULL,
-    updated_at timestamp(0),
-    deleted_at timestamp(0) DEFAULT CURRENT_TIMESTAMP NOT NULL
+    created_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone,
+    deleted_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -93,8 +93,8 @@ CREATE TABLE public.expenses (
     description character varying NOT NULL,
     amount integer NOT NULL,
     user_id integer NOT NULL,
-    created_at timestamp(0) DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at timestamp(0)
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp(0) without time zone
 );
 
 
@@ -126,7 +126,7 @@ CREATE TABLE public.users (
     user_id integer NOT NULL,
     email character varying NOT NULL,
     password character varying NOT NULL,
-    created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
