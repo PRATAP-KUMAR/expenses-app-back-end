@@ -46,7 +46,7 @@ const updateExpense = async (req, res) => {
     let sum = query.rows[0].sum;
 
     // give response
-    res.status(200).json({ sum });
+    res.status(200).json({ amount, description, id, sum });
 }
 
 const postExpense = async (req, res) => {
@@ -54,17 +54,17 @@ const postExpense = async (req, res) => {
     const { user_id } = req;
     const { amount, description } = req.body;
 
-    let text = 'insert into expenses values (default, $1, $2, $3) returning id';
+    let text = 'insert into expenses values (default, $1, $2, $3) returning id, created_at';
     let values = [description, amount, user_id];
     let query = await pool.query(text, values);
-    let id = query.rows[0].id
+    let {id, created_at} = query.rows[0]
 
     text = 'select sum(amount) from expenses where user_id = $1';
     values = [user_id];
     query = await pool.query(text, values);
     let sum = query.rows[0].sum;
 
-    const data = [{ id, amount, user_id, description }]
+    const data = [{ id, description, amount, user_id, created_at }]
     // give response
     res.status(200).json({ data, sum });
 }
@@ -73,7 +73,7 @@ const postExpense = async (req, res) => {
 const deleteExpense = async (req, res) => {
     try {
         const { user_id } = req;
-        const { id } = req.params
+        const { id } = req.params;
 
         let text, values, query;
 
@@ -101,7 +101,7 @@ const deleteExpense = async (req, res) => {
             query = await pool.query(text, values);
             sum = query.rows[0].sum;
         }
-        return res.status(200).json({ sum });
+        return res.status(200).json({ id, sum });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

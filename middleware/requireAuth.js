@@ -15,7 +15,7 @@ const requireAuth = (req, res, next) => {
         req.user_id = id;
         next();
     } catch (error) {
-        console.log('failed');
+        console.log('Authentication Failed');
     }
 }
 
