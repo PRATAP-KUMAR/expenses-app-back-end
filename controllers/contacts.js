@@ -34,9 +34,10 @@ const updateContact = async (req, res) => {
     let text = 'update contacts set name = $3, phone = $4, updated_at = current_timestamp where user_id = $1 and id = $2';
     let values = [user_id, id, name, phone];
     let query = await pool.query(text, values);
-    console.log(query.rowCount);
-    // give response
-    res.status(200).json({ name, phone, id });
+    if (query.rowCount === 1) {
+        // give response
+        res.status(200).json({ name, phone, id });
+    }
 }
 
 const postContact = async (req, res) => {
@@ -55,7 +56,7 @@ const postContact = async (req, res) => {
         // give response
         res.status(200).json(data);
     } catch (e) {
-        res.status(500).json({message: e.message})
+        res.status(500).json({ message: e.message })
     }
 }
 
@@ -83,7 +84,6 @@ const deleteContact = async (req, res) => {
 
         res.status(200).json({ id });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: error.message });
     }
 }
