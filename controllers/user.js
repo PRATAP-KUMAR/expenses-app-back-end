@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const createToken = (id) => {
-    return jwt.sign({ id }, process.env.SECRET, { expiresIn: '2d' });
+    return jwt.sign({ id }, process.env.SECRET, { expiresIn: '1h' });
 }
 
 const signup = async (req, res) => {
@@ -72,7 +72,6 @@ const login = async (req, res) => {
 
         res.status(200).json({ email, token });
     } catch (error) {
-        console.log(error.message);
         res.status(400).json({ "error": error.message});
     }
 }
